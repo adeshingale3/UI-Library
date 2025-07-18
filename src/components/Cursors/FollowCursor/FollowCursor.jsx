@@ -1,48 +1,59 @@
-// import React, { useEffect, useRef, useState } from 'react';
-// import './CustomCursor.css'; // Import the CSS file
+import React, { useEffect, useRef, useState } from 'react';
 
-// export default function CustomCursor() {
-//   const cursorRef = useRef(null);
-//   const mouse = useRef({ x: 0, y: 0 });
-//   const pos = useRef({ x: 0, y: 0 });
-//   const [clicked, setClicked] = useState(false);
+const FollowCursor = () => {
+  const cursorRef = useRef(null);
+  const mouse = useRef({ x: 0, y: 0 });
+  const pos = useRef({ x: 0, y: 0 });
+  const [clicked, setClicked] = useState(false);
 
-//   useEffect(() => {
-//     const handleMouseMove = (e) => {
-//       mouse.current.x = e.clientX;
-//       mouse.current.y = e.clientY;
-//     };
-//     const handleClick = () => {
-//       setClicked(true);
-//       setTimeout(() => setClicked(false), 300);
-//     };
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      mouse.current.x = e.pageX;
+    mouse.current.y = e.pageY;
+    };
 
-//     window.addEventListener("mousemove", handleMouseMove);
-//     window.addEventListener("click", handleClick);
+    const handleClick = () => {
+      setClicked(true);
+      setTimeout(() => setClicked(false), 300);
+    };
 
-//     const updateCursor = () => {
-//       pos.current.x += (mouse.current.x - pos.current.x) * 0.1;
-//       pos.current.y += (mouse.current.y - pos.current.y) * 0.1;
+    document.body.style.cursor = 'none'; // hide default cursor
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("click", handleClick);
 
-//       if (cursorRef.current) {
-//         cursorRef.current.style.transform = `translate3d(${pos.current.x}px, ${pos.current.y}px, 0)`;
-//       }
+    const updateCursor = () => {
+      // Set exact position
+      pos.current.x = mouse.current.x;
+      pos.current.y = mouse.current.y;
 
-//       requestAnimationFrame(updateCursor);
-//     };
+      const size = 20; // cursor size in px (w-5 h-5)
+      const offsetX = size / 2;
+      const offsetY = size / 2;
 
-//     updateCursor();
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate3d(${pos.current.x - offsetX}px, ${pos.current.y - offsetY}px, 0)`;
+      }
 
-//     return () => {
-//       window.removeEventListener("mousemove", handleMouseMove);
-//       window.removeEventListener("click", handleClick);
-//     };
-//   }, []);
+      requestAnimationFrame(updateCursor);
+    };
 
-//   return (
-//     <div
-//       ref={cursorRef}
-//       className={`custom-cursor ${clicked ? 'clicked' : ''}`}
-//     />
-//   );
-// }
+    updateCursor();
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("click", handleClick);
+      document.body.style.cursor = 'none';
+    };
+  }, []);
+
+  return (
+    <div
+      ref={cursorRef}
+      className={`fixed w-5 h-5 border-2 border-white rounded-full pointer-events-none z-[999] mix-blend-difference transition-transform duration-100 ease-out ${
+        clicked ? 'bg-white' : ''
+      }`}
+    />
+  );
+};
+
+export default FollowCursor;
