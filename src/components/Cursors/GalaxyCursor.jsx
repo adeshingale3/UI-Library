@@ -41,11 +41,13 @@ const GalaxyCursor = () => {
                 stiffness: 400,
                 mass: 0.5,
             }}>
+                {/* Outer Circle */}
             <div
                 ref={cursorRef}
                 className={`fixed z-9 w-7 h-7 border border-2 border-orange-600 rounded-full cursor-none ${clicked ? 'scale-150 transition duration-300 ease-in-out delay-700' : 'scale-100'}`}
                 style={{ transform: "translate3d(0,0,0)", transition: "transform 0.1s ease-out" }}
             />
+            {/* Glow */}
             <div
                 ref={cursorRef}
                 className={`fixed z-1 w-10 h-10 bg-orange-600 blur-xl rounded-full cursor-none `}
